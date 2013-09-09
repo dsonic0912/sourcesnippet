@@ -53,7 +53,7 @@
                                 <a href="" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-list-alt icon-white"></i> MySnippets<b class="caret"></b></a>
                                 <ul class="dropdown-menu">
                                     <li class="{% if page == 'new_snippet' %}active{% endif %}">
-                                        <a href="{% url 'snippetmanager:new_snippet' %}"><i class="icon-plus"></i> Write New Snippet</a>
+                                        <a href="{% url 'snippetmanager:new_snippet' %}"><i class="icon-pencil"></i> Write New Snippet</a>
                                     </li>
                                     <li class="{% if page == 'mysnippets' %}active{% endif %}">
                                         <a href="{% url 'snippetmanager:mysnippets' %}"><i class="icon-file"></i>Manage My Snippets</a>
@@ -65,14 +65,14 @@
                         </ul>
                         <ul class="nav pull-right">
                             {% if not user.is_authenticated %}
-                            <li class="{% if page == 'signup' %}active{% endif %}"><a href="{% url 'signup' %}">Sign up</a></li>
+                            <li class="{% if page == 'signup' %}active{% endif %}"><a href="{% url 'signup' %}"><i class="icon-edit icon-white"></i> Sign up</a></li>
                             <li class="divider-vertical"></li>
-                            <li class="{% if page == 'signin' %}active{% endif %}"><a href="{% url 'signin' %}">Sign in</a></li>
+                            <li class="{% if page == 'signin' %}active{% endif %}"><a href="{% url 'signin' %}"><i class="icon-hand-right icon-white"></i> Sign in</a></li>
                             <input type="hidden" id="g_user_id" value="0">
                             {% else %}
                             <li><a href="">Hello! {{ user.first_name }}</a></li>
                             <li class="divider-vertical"></li>
-                            <li><a href="{% url 'signout' %}">Sign Out</a></li>
+                            <li><a href="{% url 'signout' %}"><i class="icon-off icon-white"></i> Sign out</a></li>
                             <input type="hidden" id="g_user_id" value="{{ user.id }}">
                             {% endif %}
                         </ul>

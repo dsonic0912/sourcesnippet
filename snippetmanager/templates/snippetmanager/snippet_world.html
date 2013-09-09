@@ -14,7 +14,7 @@
 					{% endfor %}
 				</select>
 				<input type="text" class="search-query span2" name="keyword" placeholder="Keyword">
-				<button type="submit" class="btn btn-primary">Go</button>
+				<button type="submit" class="btn btn-primary"><i class="icon-search icon-white"></i> Search</button>
 			</form>
 		</div>
 	</div>
@@ -43,7 +43,7 @@
 				<h3>{{ snippet.title }} <span style="font-size: small; color: red;">{{ snippet.category_name }}</span></h3>
 				<pre style="border: 0px;">{{ snippet.description }}</pre>
 				<p>
-					<a href="{% url 'snippetmanager:public_snippet_detail' snippet.id %}" class="btn btn-primary">View</a>
+					<a href="{% url 'snippetmanager:public_snippet_detail' snippet.id %}" class="btn btn-primary"><i class="icon-eye-open icon-white"></i> View</a>
 					{% if snippet.improve %}<span class="label label-success">Improvable</span>{% endif %}
 				</p>
 				</div>
