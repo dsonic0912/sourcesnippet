@@ -20,12 +20,14 @@ class CodeManager(models.Manager):
 			s_code = code[:500] + '...'
 			desc = snippet.description
 			s_desc = desc[:100] + '...'
+			title = snippet.title
+			s_title = title[:20] + '...'
 
 			new_snippet = {
 				'id': snippet.id,
 				'code': s_code,
 				'description': s_desc,
-				'title': snippet.title,
+				'title': s_title,
 				'category_name': snippet.category.name,
 				'public': snippet.public,
 				'improve': snippet.improvement
@@ -75,10 +77,12 @@ class CodeManager(models.Manager):
 			s_snippet = code[:500] + '...'
 			desc = snippet.description
 			s_desc = desc[:100] + '...'
+			title = snippet.title
+			s_title = title[:20] + '...'
 
 			new_snippet = {
 				'id': snippet.id,
-				'title': snippet.title,
+				'title': s_title,
 				'description': s_desc,
 				'category_name': snippet.category.name,
 				'code': s_snippet,
@@ -97,12 +101,14 @@ class CodeManager(models.Manager):
 			snippets_list = Code.objects.filter(
 				Q(category=cat),
 				Q(title__icontains=keyword) | Q(description__icontains=keyword),
-				Q(delete_date=None)
+				Q(delete_date=None),
+				Q(public=True)
 			).order_by('-create_date')
 		else:
 			snippets_list = Code.objects.filter(
 				Q(title__icontains=keyword) | Q(description__icontains=keyword),
-				Q(delete_date=None)
+				Q(delete_date=None),
+				Q(public=True)
 			).order_by('-create_date')
 
 		return_snippet = []
@@ -111,10 +117,12 @@ class CodeManager(models.Manager):
 			s_snippet = code[:500] + '...'
 			desc = snippet.description
 			s_desc = desc[:100] + '...'
+			title = snippet.title
+			s_title = title[:20] + '...'
 
 			new_snippet = {
 				'id': snippet.id,
-				'title': snippet.title,
+				'title': s_title,
 				'description': s_desc,
 				'category_name': snippet.category.name,
 				'code': s_snippet,

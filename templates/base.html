@@ -58,6 +58,9 @@
                                     <li class="{% if page == 'mysnippets' %}active{% endif %}">
                                         <a href="{% url 'snippetmanager:mysnippets' %}"><i class="icon-file"></i>Manage My Snippets</a>
                                     </li>
+                                    <li class="{% if page == 'my_projects' %}active{% endif %}">
+                                        <a href="{% url 'snippetmanager:my_projects' %}"><i class="icon-book"></i>Manage My Projects</a>
+                                    </li>
                                 </ul>
                             </li>
                             <li class="{% if page == '' %}active{% endif %}" id="btnNotify"><a href="" data-toggle="modal" data-target="#notifyModal"><i class="icon-envelope icon-white"></i> Notification<span class="badge badge-important" id="num_of_notify">{% if notify_count > 0 %} {{ notify_count }} {% endif %}</span></a></li>

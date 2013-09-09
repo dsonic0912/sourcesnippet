@@ -23,4 +23,5 @@ urlpatterns = patterns('',
     url(r'^(?P<improve_id>\d+)/disapprove_snippet$', views.disapprove_snippet, name='disapprove_snippet'),
     url(r'^facebook_login$', views.facebook_login, name='facebook_login'),
     url(r'^google_login$', views.google_login, name='google_login'),
+    url(r'^my_projects$', views.my_projects, name='my_projects'),
 )

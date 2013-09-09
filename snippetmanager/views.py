@@ -46,9 +46,12 @@ def snippet_world(request):
 		desc = snippet.description
 		s_desc = desc[:100] + '...'
 
+		title = snippet.title
+		s_title = title[:20] + '...'
+
 		short_snippets_list.append({
 			'id': snippet.id,
-			'title': snippet.title,
+			'title': s_title,
 			'description': s_desc,
 			'code': s_code,
 			'category_name': snippet.category.name,
@@ -685,4 +688,10 @@ def google_login(request):
 
 	return HttpResponseRedirect(reverse('snippetmanager:snippetworld'))
 
+# My Projects
+def my_projects(request):
+	context = {
+		'page': 'my_projects'
+	}
 
+	return render(request, 'snippetmanager/my_projects.html', context)
