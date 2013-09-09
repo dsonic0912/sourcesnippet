@@ -2,7 +2,7 @@ $(document).ready(function() {
 	var cat_name = $("#cat_name").val();
 
 	if (cat_name == 'Untitled') {
-		cat_name = 'python';
+		cat_name = 'html';
 	}
 
 	// initialisation

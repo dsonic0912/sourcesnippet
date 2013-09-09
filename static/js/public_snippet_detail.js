@@ -9,7 +9,7 @@ $(document).ready(function() {
 	}
 
 	if (cat_name == 'Untitled') {
-		cat_name = 'python'
+		cat_name = 'html'
 	}
 
 	// initialisation
