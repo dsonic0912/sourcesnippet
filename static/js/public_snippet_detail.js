@@ -8,6 +8,10 @@ $(document).ready(function() {
 		is_improve = true;
 	}
 
+	if (cat_name == 'Untitled') {
+		cat_name = 'python'
+	}
+
 	// initialisation
 	editAreaLoader.init({
 		id: "publicSnippetTextArea"	// id of the textarea to transform
