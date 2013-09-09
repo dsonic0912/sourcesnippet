@@ -1,4 +1,6 @@
 $(document).ready(function() {
+	console.log('new_snippet');
+	
 	$("#newProjectError").hide();
 	var host_url = 'http://' + window.location.host;
 	// initialisation
