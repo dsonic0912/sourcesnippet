@@ -41,6 +41,36 @@
 		}(document, 'script', 'facebook-jssdk'));
 	</script>
 
+	<!-- Place this asynchronous JavaScript just before your </body> tag -->
+	<script type="text/javascript">
+		function signinCallback(authResult) {
+			if (authResult['access_token']) {
+				// This sample assumes a client object has been created.
+				// To learn more about creating a client, check out the starter:
+				//  https://developers.google.com/+/quickstart/javascript
+				gapi.client.load('plus','v1', function(){
+					var request = gapi.client.plus.people.get({
+						'userId': 'me'
+					});
+					request.execute(function(resp) {
+						
+						var id = resp.id;
+						var first_name = resp.name.givenName;
+						var last_name = resp.name.familyName;
+
+						window.location.href = '/google_login?google_id='+id+'&first_name='+first_name+'&last_name='+last_name;
+					});
+				});
+			}
+		}
+
+		(function() {
+			var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+			po.src = 'https://apis.google.com/js/client:plusone.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+		})();
+	</script>
+
 	{% if error_code == 2 %}
 	<div class="alert alert-error">
 		<strong>Oh snap!</strong> The email address has been used....
@@ -63,6 +93,19 @@
 	</form>
 	<div id="btnFacebookSignin">
 		<a href="#" onClick="fb_login()"><img src="/static/images/facebook_signin.png" width=300 height=200></a>
+	</div>
+
+	<div id="btnGoogleSignin">
+		<span
+		class="g-signin"
+		data-callback="signinCallback"
+		data-clientid="1082814498699.apps.googleusercontent.com"
+		data-cookiepolicy="single_host_origin"
+		data-requestvisibleactions="http://schemas.google.com/AddActivity"
+		data-scope="https://www.googleapis.com/auth/plus.login"
+		data-width="wide" 
+		data-height="tall"
+		></span>
 	</div>
 </div>
 {% endblock %}
