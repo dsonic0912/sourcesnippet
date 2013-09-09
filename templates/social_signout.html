@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container" id="contentSocailSignout">
+	<center><h3> Signing out... </h3></center>
+
+<script type="text/javascript">
+	function signinCallback(authResult) {
+		if (authResult['access_token']) {
+			var access_token = authResult.access_token;
+			var revokeUrl = 'https://accounts.google.com/o/oauth2/revoke?token=' + access_token;
+
+			// Perform an asynchronous GET request.
+			$.ajax({
+				type: 'GET',
+				url: revokeUrl,
+				async: false,
+				contentType: "application/json",
+				dataType: 'jsonp',
+				success: function(nullResponse) {
+					// Do something now that user is disconnected
+					// The response is always undefined.
+					window.location.href = '/';
+				},
+				error: function(e) {
+					// Handle the error
+					// console.log(e);
+					// You could point users to manually disconnect if unsuccessful
+					// https://plus.google.com/apps
+					window.location.href = '/';
+				}
+			});
+		} else {
+			window.location.href = '/';
+		}
+	}
+
+	(function() {
+		var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+		po.src = 'https://apis.google.com/js/client:plusone.js';
+		var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+	})();
+</script>
+
+<div id="btnGoogleSignin">
+	<span
+	class="g-signin"
+	data-callback="signinCallback"
+	data-clientid="1082814498699.apps.googleusercontent.com"
+	data-cookiepolicy="single_host_origin"
+	data-requestvisibleactions="http://schemas.google.com/AddActivity"
+	data-scope="https://www.googleapis.com/auth/plus.login"
+	data-width="wide" 
+	data-height="tall"
+	></span>
+</div>
+</dib>
+{% endblock %}

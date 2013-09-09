@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block content %}
+<script>
+	function disqus_config() {
+		this.callbacks.onNewComment = [function(comment) {
+			if (comment.id && comment.text) {
+				var snippet_id = $("#snippet_id").val();
+				var user_id = $("#user_id").val();
+				
+				var params = {
+					'user_id': user_id,
+					'code_id': snippet_id,
+					'disqus_id': comment.id,
+					'comment': comment.text
+				};
+
+				$.post('/disqus_comment', params, function(data) {
+
+				}, 'json');
+			}
+		}];
+	}
+</script>
+<div class="container" id="contentPublicSnippetDetail">
+	<input type="hidden" id="publicSnippetImprove" value="{{ snippet.improvement }}">
+	<input type="hidden" id="publicSnippetCatName" value="{{ cat_name }}">
+	<input type="hidden" id="snippet_id" value="{{ snippet.id }}">
+	<input type="hidden" id="user_id" value="{{ user.id }}">
+	<form class="form-horizontal" action="{% url 'snippetmanager:public_snippet_detail' snippet.id %}" method="post">
+		{% csrf_token %}
+		<fieldset>
+			{% if error_code == 1 %}
+				<div class="alert alert-error">
+					<strong>Oh snap!</strong> You have made change on this snippet before which has not been approved. Please try again later...
+				</div>
+			{% elif error_code == 0 %}
+				<div class="alert alert-success">
+					<strong>Thanks!</strong> The changes has been submitted successfully. It will be applied once it is approved...
+				</div>
+			{% endif %}
+			<legend>{{ snippet.title }}</legend>
+		</fieldset>
+			<div class="control-group">
+				<label class="control-label" for="publicSnippetDesc">Description</label>
+				<div class="controls">
+					<pre style="padding-top: 5px; border: 0px;">{{ snippet.description }}</pre>
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label"></label>
+				<div class="controls">
+					<textarea id="publicSnippetTextArea" style="height: 400px; width: 100%;" name="improved_snippet">{{ snippet.code }}</textarea>
+				</div>
+			</div>
+			{% if snippet.improvement %}
+			<div class="form-actions">
+				<button type="submit" class="btn btn-primary">Submit Changes</button>
+			</div>
+			{% endif %}
+	</form>
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+        var disqus_shortname = 'sourcesnippeter'; // required: replace example with your forum shortname
+        var disqus_identifier = '{{ snippet.id }}';
+        var disqus_title = '{{ snippet.title }}{{ snippet.id }}';
+    	var disqus_url = "http://sourcesnippeter.dsonic.webfactional.com{% url 'snippetmanager:public_snippet_detail' snippet.id %}";
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>	
+</div>
+{% endblock %}

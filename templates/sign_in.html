@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container" id="contentSignIn">
+	<div id="fb-root"></div>
+	<script>
+		window.fbAsyncInit = function() {
+			// init the FB JS SDK
+			FB.init({
+				appId      : '497371283685919',                        // App ID from the app dashboard
+				channelUrl : 'http://sourcesnippeter.dsonic.webfactional.com/static/js/channel.html', // Channel file for x-domain comms
+				status     : true,                                 // Check Facebook Login status
+				xfbml      : true                                  // Look for social plugins on the page
+			});
+
+			// Additional initialization code such as adding Event Listeners goes here
+		};
+
+		function fb_login() {
+			// Additional initialization code such as adding Event Listeners goes here
+			FB.login(function(response) {
+				if (response.authResponse) {
+					FB.api('/me', function(response) {
+						var facebook_id = response.id;
+						var first_name = response.first_name;
+						var last_name = response.last_namse;
+
+						window.location.href = '/facebook_login?facebook_id='+facebook_id+'&first_name='+first_name+'&last_name='+last_name;
+					});
+				}
+			});
+		}
+
+		// Load the SDK asynchronously
+		(function(d, s, id){
+			var js, fjs = d.getElementsByTagName(s)[0];
+			if (d.getElementById(id)) {return;}
+			js = d.createElement(s); js.id = id;
+			js.src = "//connect.facebook.net/en_US/all.js";
+			fjs.parentNode.insertBefore(js, fjs);
+		}(document, 'script', 'facebook-jssdk'));
+	</script>
+
+	<!-- Place this asynchronous JavaScript just before your </body> tag -->
+	<script type="text/javascript">
+		function signinCallback(authResult) {
+			if (authResult['access_token']) {
+				// This sample assumes a client object has been created.
+				// To learn more about creating a client, check out the starter:
+				//  https://developers.google.com/+/quickstart/javascript
+				gapi.client.load('plus','v1', function(){
+					var request = gapi.client.plus.people.get({
+						'userId': 'me'
+					});
+					request.execute(function(resp) {
+						
+						var id = resp.id;
+						var first_name = resp.name.givenName;
+						var last_name = resp.name.familyName;
+
+						window.location.href = '/google_login?google_id='+id+'&first_name='+first_name+'&last_name='+last_name;
+					});
+				});
+			}
+		}
+
+		(function() {
+			var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+			po.src = 'https://apis.google.com/js/client:plusone.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+		})();
+	</script>
+
+	<form class="form-signin" method="post" action="{% url 'signin' %}">
+		{% csrf_token %}
+		<!--<h2 class="form-signup-heading">Sign up</h2>-->
+		{% if signin_error %}<p class="error_msg">{{ signin_error }}{% endif %}
+		<input type="text" class="input-block-level" name="email" placeholder="Email Address">
+		<span class="error_msg">{{ form.email.errors|escape }}</span>
+		<input type="password" class="input-block-level" name="password" placeholder="Password">
+		<span class="error_msg">{{ form.password.errors|escape }}</span>
+		<button class="btn btn-large btn-primary" type="submit">Sign in</button>
+	</form>
+
+	<div id="btnFacebookSignin">
+		<a href="#" onClick="fb_login()"><img src="/static/images/facebook_signin.png" width=250 height=200></a>
+	</div>
+
+	<div id="btnGoogleSignin">
+		<span
+		class="g-signin"
+		data-callback="signinCallback"
+		data-clientid="1082814498699.apps.googleusercontent.com"
+		data-cookiepolicy="single_host_origin"
+		data-requestvisibleactions="http://schemas.google.com/AddActivity"
+		data-scope="https://www.googleapis.com/auth/plus.login"
+		data-width="wide" 
+		data-height="tall"
+		></span>
+	</div>
+</div>
+{% endblock %}

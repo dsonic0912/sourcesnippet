@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>sourceSnippeter</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <!-- Bootstrap -->
+        <link href="/static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+        <link href="/static/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet">
+        <link href="/static/bootstrap/css/bootstrap-switch.css" rel="stylesheet">
+        <Link href="/static/css/all.css" rel="stylesheet">
+        <link href="/static/css/bootstrap-rowlink.min.css" rel="stylesheet">
+        {% if page == 'home' %} <link href="/static/css/home.css" rel="stylesheet"> {% endif %}
+        {% if page == 'signup' %} <link href="/static/css/sign_up.css" rel="stylesheet"> {% endif %}
+        {% if page == 'signin' %} <link href="/static/css/sign_in.css" rel="stylesheet"> {% endif %}
+        {% if page == 'new_snippet' %} <link href="/static/css/new_snippet.css" rel="stylesheet"> {% endif %}
+        {% if page == 'mysnippets' %} <link href="/static/css/my_snippets.css" rel="stylesheet"> {% endif %}
+        {% if page == 'edit_snippet' %} <link href="/static/css/edit_snippet.css" rel="stylesheet"> {% endif %}
+        <style type="text/css">
+            /* Footer */
+            #footer{
+                width:100%;
+                position:fixed;
+                padding-left:20px;
+                bottom:0;
+                left:0;
+                line-height:20px;
+                color:#888;
+                font-size:13px;
+                background:rgb(0, 0, 0);
+                background:rgba(0, 0, 0, 0.8);
+                z-index:99;
+            }
+            #footer span{
+                display:block;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="navbar navbar-fixed-top">
+            <div class="navbar-inner">
+                <div class="container">
+                    <a class="btn btn-navbar" data-toggle="collapse" data-target=".navbar-inverse-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </a>
+                    <a class="brand" href="{% url 'snippetmanager:snippetworld' %}">sourceSnippeter</a>
+                    <div class="nav-collapse collapse navbar-inverse-collapse">
+                        <ul class="nav">
+                            <li class="{% if page == 'snippetworld' %}active{% endif %}"><a href="{% url 'snippetmanager:snippetworld' %}"><i class="icon-globe icon-white"> </i> SnippetWorld</a></li>
+                            <li class="dropdown {% if page == 'mysnippets' or page == 'new_snippet' %}active{% endif %}">
+                                <a href="" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-list-alt icon-white"></i> MySnippets<b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    <li class="{% if page == 'new_snippet' %}active{% endif %}">
+                                        <a href="{% url 'snippetmanager:new_snippet' %}"><i class="icon-plus"></i> Write New Snippet</a>
+                                    </li>
+                                    <li class="{% if page == 'mysnippets' %}active{% endif %}">
+                                        <a href="{% url 'snippetmanager:mysnippets' %}"><i class="icon-file"></i>Manage My Snippets</a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="{% if page == '' %}active{% endif %}" id="btnNotify"><a href="" data-toggle="modal" data-target="#notifyModal"><i class="icon-envelope icon-white"></i> Notification<span class="badge badge-important" id="num_of_notify">{% if notify_count > 0 %} {{ notify_count }} {% endif %}</span></a></li>
+                            <li class="{% if page == '' %}active{% endif %}"><a href="#"><i class="icon-info-sign icon-white"></i> About</a></li>
+                        </ul>
+                        <ul class="nav pull-right">
+                            {% if not user.is_authenticated %}
+                            <li class="{% if page == 'signup' %}active{% endif %}"><a href="{% url 'signup' %}">Sign up</a></li>
+                            <li class="divider-vertical"></li>
+                            <li class="{% if page == 'signin' %}active{% endif %}"><a href="{% url 'signin' %}">Sign in</a></li>
+                            <input type="hidden" id="g_user_id" value="0">
+                            {% else %}
+                            <li><a href="">Hello! {{ user.first_name }}</a></li>
+                            <li class="divider-vertical"></li>
+                            <li><a href="{% url 'signout' %}">Sign Out</a></li>
+                            <input type="hidden" id="g_user_id" value="{{ user.id }}">
+                            {% endif %}
+                        </ul>
+                    </div><!-- /.nav-collapse -->
+                </div>
+             </div><!-- /navbar-inner -->
+        </div>
+
+        {% block content %}
+
+        {% endblock %}
+
+        <!-- Modal -->
+        <div id="notifyModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-header" style="background-color: #df382c;">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h3 id="notifyModalHeader" style="color: white;">Notification</h3>
+            </div>
+            <div class="modal-body">
+                <table class="table table-striped table-bordered">
+                <tbody data-provides="rowlink">
+                    {% if notification %}
+                        {% for notice in notification %}
+                        <tr class="rowlink">
+                            <td><a href="{% url 'snippetmanager:improved_snippet_detail' notice.id %}"><span class="text-error">{{ notice.user.first_name }}</span> has made a change on your snippet "<span class="text-success">{{ notice.code.title }}</span>" on {{ notice.submit_date }}</a></td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        <h4>No new notifications</h4>
+                    {% endif %}
+                </tbody>
+                </table>
+            </div>
+        </div>
+
+        <footer id="footer" style="bottom: 0px;">
+            <span>© 2013 <a href="http://sourcesnippeter.dsonic.webfactional.com">sourceSnippeter.com</a>. Develop by <a href="http://myblog.dsonic.webfactional.com">David Tung</a>.
+        </footer>
+        
+        <script src="/static/jquery/jquery-1.10.1.min.js"></script>
+        <script src="/static/bootstrap/js/bootstrap.min.js"></script>
+        <script src="/static/bootstrap/js/bootstrap-switch.min.js"></script>
+        <script src="/static/bootstrap/js/bootstrap-rowlink.min.js"></script>
+        <script src="/static/js/all.js"></script>
+        {% if page == 'new_snippet' or page == 'edit_snippet' or page == 'public_snippet_detail' or page == 'improved_snippet_detail' %}
+            <script src="/static/edit_area/edit_area_full.js"></script>
+        {% endif %}
+        {% if page == 'new_snippet' %} <script src="/static/js/new_snippet.js"></script> {% endif %}
+        {% if page == 'mysnippets' %} <script src="/static/js/my_snippets.js"></script> {% endif %}
+        {% if page == 'edit_snippet' %} <script src="/static/js/edit_snippet.js"></script> {% endif %}
+        {% if page == 'public_snippet_detail' %} <script src="/static/js/public_snippet_detail.js"></script> {% endif %}
+        {% if page == 'improved_snippet_detail' %} <script src="/static/js/improved_snippet.js"></script> {% endif %}
+        {% if page == 'social_signout' %} <script src="/static/js/social_signout.js"></script> {% endif %}
+    </body>
+</html>

@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container" id="contentSignUp">
+	<div id="fb-root"></div>
+	<script>
+		window.fbAsyncInit = function() {
+			// init the FB JS SDK
+			FB.init({
+				appId      : '497371283685919',                        // App ID from the app dashboard
+				channelUrl : 'http://sourcesnippeter.dsonic.webfactional.com/static/js/channel.html', // Channel file for x-domain comms
+				status     : true,                                 // Check Facebook Login status
+				xfbml      : true                                  // Look for social plugins on the page
+			});
+
+			// Additional initialization code such as adding Event Listeners goes here
+		};
+
+		function fb_login() {
+			// Additional initialization code such as adding Event Listeners goes here
+			FB.login(function(response) {
+				if (response.authResponse) {
+					FB.api('/me', function(response) {
+						var facebook_id = response.id;
+						var first_name = response.first_name;
+						var last_name = response.last_namse;
+
+						window.location.href = '/facebook_login?facebook_id='+facebook_id+'&first_name='+first_name+'&last_name='+last_name;
+					});
+				}
+			});
+		}
+
+		// Load the SDK asynchronously
+		(function(d, s, id){
+			var js, fjs = d.getElementsByTagName(s)[0];
+			if (d.getElementById(id)) {return;}
+			js = d.createElement(s); js.id = id;
+			js.src = "//connect.facebook.net/en_US/all.js";
+			fjs.parentNode.insertBefore(js, fjs);
+		}(document, 'script', 'facebook-jssdk'));
+	</script>
+
+	{% if error_code == 2 %}
+	<div class="alert alert-error">
+		<strong>Oh snap!</strong> The email address has been used....
+	</div>
+	{% endif %}
+	<form class="form-signup" method="post" action="{% url 'signup' %}">
+		{% csrf_token %}
+		<!--<h2 class="form-signup-heading">Sign up</h2>-->
+		<span class="error_msg">{{ form.first_name.errors|escape }}</span>
+		<input type="text" class="input-block-level" name="first_name" placeholder="First Name" value="{{ first_name|default:'' }}">
+		<span class="error_msg">{{ form.last_name.errors|escape }}</span>
+		<input type="text" class="input-block-level" name="last_name" placeholder="Last Name" value="{{ last_name|default:'' }}">
+		<span class="error_msg">{{ form.email.errors|escape }}</span>
+		<input type="text" class="input-block-level" name="email" placeholder="Email Address" value="{{ email|default:'' }}">
+		<span class="error_msg">{{ form.password.errors|escape }}</span>
+		<input type="password" class="input-block-level" name="password" placeholder="Password" value="{{ password|default:'' }}">
+		{% if error_code == 1 %}<span class="error_msg">Password does not match...</span>{% endif %}
+		<input type="password" class="input-block-level" name="password2" placeholder="Confirm Password">
+		<button class="btn btn-large btn-primary" type="submit">Sign up</button>
+	</form>
+	<div id="btnFacebookSignin">
+		<a href="#" onClick="fb_login()"><img src="/static/images/facebook_signin.png" width=300 height=200></a>
+	</div>
+</div>
+{% endblock %}

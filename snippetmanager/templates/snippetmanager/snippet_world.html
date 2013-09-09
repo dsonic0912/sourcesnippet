@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container" id="contentSnippetWorld">
+	<div class="navbar">
+		<div class="navbar-inner">
+			<form class="navbar-form pull-left" method="post" action="{% url 'snippetmanager:snippet_world_sorted' %}">
+				{% csrf_token %}
+				<select name="category">
+					<option value="0">Search By Type | All</option>
+					{% for cat in cats %}
+						<option value="{{ cat.id }}" {% if cat.id == cat_id %} selected {% endif %}>{{ cat.name }}</option>
+					{% endfor %}
+				</select>
+				<input type="text" class="search-query span2" name="keyword" placeholder="Keyword">
+				<button type="submit" class="btn btn-primary">Go</button>
+			</form>
+		</div>
+	</div>
+
+	<div class="pagination">
+		<ul>
+		{% if snippets.has_previous %}
+			<li><a href="?page={{ snippets.previous_page_number }}">Prev</a></li>
+		{% endif %}
+		{% for range in snippets.paginator.page_range %}
+			<li class="{% if range == snippets.number %}active{% endif %}"><a href="?page={{range}}">{{ range }}</a></li>
+		{% endfor %}
+		{% if snippets.has_next %}
+			<li><a href="?page={{ snippets.next_page_number }}">Next</a></li>
+		{% endif %}
+		</ul>
+	</div>		
+
+	<div class="row row-desktop" style="padding-left: 20px">
+		<ul class="thumbnails">
+			{%  for snippet in snippets %}
+			<li class="span4">
+			<div class="thumbnail">
+				<textarea readonly class="codes" style="height: 200px; width: 100%; resize: none; background-color: white; color: black; overflow: hidden;" name="codes" id="mySnippetsSnippet">{{ snippet.code }}</textarea>
+				<div class="caption">
+				<h3>{{ snippet.title }} <span style="font-size: small; color: red;">{{ snippet.category_name }}</span></h3>
+				<pre style="border: 0px;">{{ snippet.description }}</pre>
+				<p>
+					<a href="{% url 'snippetmanager:public_snippet_detail' snippet.id %}" class="btn btn-primary">View</a>
+					{% if snippet.improve %}<span class="label label-success">Improvable</span>{% endif %}
+				</p>
+				</div>
+			</div>
+			</li>
+			{% endfor %}
+		</ul>
+	</div>
+</div> <!-- /container -->
+{% endblock %}

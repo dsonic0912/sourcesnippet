@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container" id="contentImprovedSnippet">
+	<input type="hidden" id="cat_name" value="{{ cat_name }}"
+	<form class="form-horizontal" action="" method="post">
+		{% csrf_token %}
+		<fieldset>
+			<legend>{{ title }} was improved by {{ first_name }} on {{ submit_date }}</legend>
+			<div class="control-group">
+				<label class="control-label">Before</label>
+				<div class="controls">
+					<textarea id="improvedSnippetBefore" style="height: 400px; width: 100%;" name="snippet_before">{{ snippet_before }}</textarea>
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label">After</label>
+				<div class="controls">
+					<textarea id="improvedSnippetAfter" style="height: 400px; width: 100%;" name="snippet_after">{{ snippet_after }}</textarea>
+				</div>
+			</div>
+			<div class="form-actions">
+				<a href="{% url 'snippetmanager:approve_snippet' improve_id %}" type="button" class="btn btn-primary">Approved</a>
+				<a href="{% url 'snippetmanager:disapprove_snippet' improve_id %}" type="button" class="btn btn-error">Disapproved</a>
+			</div>
+		</fieldset>
+	</form>
+</div>
+{% endblock %}

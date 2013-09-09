@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- my_source.html -->
+<div class="container" id="contentNewSnippet">
+	<form class="form-horizontal" action="" method="post">
+		{% csrf_token %}
+		<input type="hidden" id="txtNewSnippetPublic" value="{{ public }}">
+		<input type="hidden" id="txtNewSnippetImprove" value="{{ improve }}">
+		<fieldset>
+			{% if error_code == 99 %}
+			<div class="alert alert-error">
+              <strong>Oh snap!</strong> You do not have enough points to create a private snippet.
+            </div>
+            {% endif %}
+			<legend>Write New Snippet</legend>
+			<div class="control-group">
+				<label class="control-label" for="newSnippetProjectSelect">Project</label>
+				<div class="controls" id="newSnippetProjectControl">
+					<select name="project">
+						{% for project in projects %}
+						<option value="{{ project.id }}" {% if project.id == project_id %} selected {% endif %}>{{ project.name }}</option>
+						{% endfor %}
+					</select>
+
+					<a href="#newProjectModel" role="button" class="btn" data-toggle="modal">New Project</a>
+				</div>
+			</div>				
+			<div class="control-group">
+				<label class="control-label" for="newSnippetTitle">Title</label>
+				<div class="controls">
+					<input type="text" id="newSnippetTitle" name="title" placeholder="PHP SPL Iterator" value="{{ title|default:'' }}">
+					<span class="error_msg">{{ form.title.errors|escape }}</span>
+				</div>
+			</div>		
+			<div class="control-group">
+				<label class="control-label" for="newSnippetType">Type</label>
+				<div class="controls">
+					<select id="newSnippetType" name="snippet_type">
+						{% for cat in cats %}
+						<option value="{{ cat.id }}" {% if cat.id == cat_id %} selected {% endif %}>{{ cat.name }}</option>
+						{% endfor %}
+					</select>
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="newSnippetPublic">Public</label>
+				<div class="controls">
+					<div class="make-switch" data-on="warning" data-off="danger" id="switchPublic">
+    					<input type="checkbox" name="public" checked>
+					</div>
+				</div>
+			</div>	
+			<div class="control-group">
+				<label class="control-label" for="newSnippetImprove">Improvable</label>
+				<div class="controls">
+					<div class="make-switch" data-on="warning" data-off="danger" id="switchImprove">
+    					<input type="checkbox" name="improve" checked>
+					</div>
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="newSnippetDesc">Description</label>
+				<div class="controls">
+					<textarea id="newSnippetDesc" name="description" style="width: 70%; height: 200px;">{{ description|default:'' }}</textarea>
+					<span class="error_msg">{{ form.description.errors|escape }}</span>
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label"></label>
+				<div class="controls">
+					<textarea id="newSnippetSnippet" style="height: 400px; width: 100%;" name="snippet">{{ codes|default:'' }}</textarea>
+					<span class="error_msg">{{ form.snippet.errors|escape }}</span>
+				</div>
+			</div>
+			<div class="form-actions">
+				<button type="submit" class="btn btn-primary">Submit</button>
+				<button type="button" class="btn" id="newSnippetCancel">Cancel</button>
+			</div>
+		</fieldset>
+	</form>
+</div> <!-- /container -->
+
+<!-- Modal -->
+<div id="newProjectModel" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-header" style="background-color: #df382c;">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		<center><h3 id="myModalLabel" style="color: white;">Create New Project</h3></center>
+	</div>
+	<div class="modal-body">
+		<div class="alert alert-error" id="newProjectError">
+			<!--<strong>Error!</strong> Duplicate Project Name.-->
+		</div>
+
+		<input type="hidden" id="newProjectUserId" value="{{ user.id }}">
+		<center><input type="text" id="newSnippetProjectName" placeholder="Project Name" value=""></center>
+		</div>
+		
+		<div class="modal-footer">
+		<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+		<button class="btn btn-primary" id="btnNewProject">Create</button>
+	</div>
+</div>
+{% endblock %}

@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container" id="contentEditSnippet">
+	<form class="form-horizontal" action="{% url 'snippetmanager:edit_snippet' code.id %}" method="post">
+		{% csrf_token %}
+		<input type="hidden" id="cat_name" value="{{ code.category.name }}">
+		<input type="hidden" id="txtEditSnippetPublic" value="{{ code.public }}">
+		<input type="hidden" id="txtEditSnippetImprove" value="{{ code.improvement }}">
+		<fieldset>
+			{% if error_code == 99 %}
+			<div class="alert alert-error">
+              <strong>Oh snap!</strong> You do not have enough points to turn off public.
+            </div>
+            {% endif %}
+			<legend>Edit Code</legend>
+			<div class="control-group">
+				<label class="control-label" for="editSnippetProject">Project</label>
+				<div class="controls">
+					<select name="project">
+						{% for project in projects %}
+						<option value="{{ project.id }}" {% if project.id == code.project.id %} selected {% endif %}>{{ project.name }}</option>
+						{% endfor %}
+					</select>
+				</div>
+			</div>					
+			<div class="control-group">
+				<label class="control-label" for="editSnippetTitle">Title</label>
+				<div class="controls">
+					<input type="text" id="editSnippetTitle" name="title" value="{{ code.title }}">
+					<span style="color: red;">{{ form.title.errors|escape }}</span>
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="editSnippetType">Type</label>
+				
+				<div class="controls">
+					<select name="snippet_type">
+						{% for cat in cats %}
+						<option value="{{ cat.id }}" {% if cat.id == code.category.id %} selected {% endif %}>{{ cat.name }}</option>
+						{% endfor %}
+					</select>
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="newSnippetPublic">Public</label>
+				<div class="controls">
+					<div class="make-switch" data-on="warning" data-off="danger" id="switchPublic">
+    					<input type="checkbox" name="public" checked>
+					</div>
+				</div>
+			</div>	
+			<div class="control-group">
+				<label class="control-label" for="newSnippetImprove">Improvable</label>
+				<div class="controls">
+					<div class="make-switch" data-on="warning" data-off="danger" id="switchImprove">
+    					<input type="checkbox" name="improve" checked>
+					</div>
+				</div>
+			</div>			
+			<div class="control-group">
+				<label class="control-label" for="editSnippetDesc">Description</label>
+				<div class="controls">
+					<textarea id="editSnippetDesc" name="description" style="width: 70%; height: 200px;">{{ code.description }}</textarea>
+					<span style="color: red;">{{ form.description.errors }}</span>
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label"></label>
+				<div class="controls">
+					<textarea id="editSnippetSnippet" style="height: 400px; width: 100%;" name="snippet">{{ code.code }}</textarea>
+					<span style="color: red;">{{ form.snippet.errors }}</span>
+				</div>
+			</div>
+			<div class="form-actions">
+				<button type="submit" class="btn btn-primary">Update</button>
+				<button type="button" class="btn" id="editSnippetCancel">Cancel</button>
+			</div>
+		</fieldset>
+	</form>
+</div>
+{% endblock %}
