@@ -1,6 +1,9 @@
 $(document).ready(function() {
 	var cat_name = $("#cat_name").val();
-	console.log(cat_name);
+
+	if (cat_name == 'Untitled') {
+		cat_name = 'python';
+	}
 
 	// initialisation
 	editAreaLoader.init({
