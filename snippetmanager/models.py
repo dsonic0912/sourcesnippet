@@ -143,6 +143,7 @@ class Category(models.Model):
 class Project(models.Model):
 	name = models.CharField(max_length=50)
 	user = models.ForeignKey(User)
+	delete_date = models.DateTimeField(null=True)
 
 class Code(models.Model):
 	title = models.CharField(max_length=50)

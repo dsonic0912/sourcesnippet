@@ -3,7 +3,7 @@
 ##################################
 
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.core.urlresolvers import reverse
 from django.utils import simplejson, timezone
@@ -151,7 +151,8 @@ def my_snippets(request):
 
 	cats = Category.objects.all()
 	projects = Project.objects.filter(
-		Q(pk=1) | Q(user=request.user)
+		Q(pk=1) | Q(user=request.user),
+		Q(delete_date=None)
 	)
 
 	context = {
@@ -189,7 +190,8 @@ def my_snippets_sorted(request):
 
 		cats = Category.objects.all()
 		projects = Project.objects.filter(
-			Q(pk=1) | Q(user=request.user)
+			Q(pk=1) | Q(user=request.user),
+			Q(delete_date=None)
 		)
 
 		paginator = Paginator(snippets_list, 12)
@@ -231,7 +233,8 @@ def new_snippet(request):
 	# Getting categories
 	cats = Category.objects.all()
 	projects = Project.objects.filter(
-		Q(pk=1) | Q(user=request.user)
+		Q(pk=1) | Q(user=request.user),
+		Q(delete_date=None)
 	)
 
 	context = {
@@ -312,7 +315,8 @@ def edit_snippet(request, code_id):
 	code = Code.objects.get(pk=code_id)
 	cats = Category.objects.all()
 	projects = Project.objects.filter(
-		Q(pk=1) | Q(user=request.user)
+		Q(pk=1) | Q(user=request.user),
+		Q(delete_date=None)
 	)
 
 	context = {
@@ -408,7 +412,8 @@ def new_project(request):
 		try:
 			check_duplicate_name = Project.objects.get(
 				Q(name=project_name),
-				Q(user=user)
+				Q(user=user),
+				Q(delete_date=None)
 			)
 		except Project.DoesNotExist:
 			new_project = Project(name=project_name)
@@ -689,9 +694,32 @@ def google_login(request):
 	return HttpResponseRedirect(reverse('snippetmanager:snippetworld'))
 
 # My Projects
+@login_required
 def my_projects(request):
+	projects = Project.objects.filter(
+		Q(user=request.user) | Q(pk=1),
+		Q(delete_date=None)
+	)
+
 	context = {
-		'page': 'my_projects'
+		'page': 'my_projects',
+		'projects': projects
 	}
 
 	return render(request, 'snippetmanager/my_projects.html', context)
+
+# Delete Project
+@login_required
+def delete_project(request, project_id):
+	project = get_object_or_404(Project, pk=project_id)
+
+	# Delete Project
+	project.delete_date = timezone.now()
+	project.save()
+
+	# Set snippets to the Untitled project
+	snippets = Code.objects.filter(project=project, user=request.user)
+	untitled_project = Project.objects.get(pk=1)
+	snippets.update(project=untitled_project)
+
+	return HttpResponseRedirect(reverse('snippetmanager:my_projects'))
