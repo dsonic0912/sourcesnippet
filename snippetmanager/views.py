@@ -275,7 +275,7 @@ def new_snippet(request):
 			snippet = form.cleaned_data['snippet']
 			project_id = form.cleaned_data['project']
 
-			new_snippet = Code(title=title, description=description, code=snippet, create_date=timezone.now(), update_date=timezone.now(), public=public, improvement=improve)
+			new_snippet = Code(title=title, description=description, code=snippet, create_date=timezone.now(), update_date=timezone.now(), public=public, improvement=improve, liked=0)
 
 			category = Category.objects.get(pk=cat_id)
 			project = Project.objects.get(pk=project_id)
@@ -723,3 +723,57 @@ def delete_project(request, project_id):
 	snippets.update(project=untitled_project)
 
 	return HttpResponseRedirect(reverse('snippetmanager:my_projects'))
+
+# Facebook Like
+@csrf_exempt
+def facebook_like(request):
+	if request.method == 'POST':
+		url = request.POST['url']
+
+		str_pos = url.find('?')
+		snippet_id = int(url[str_pos+1:])
+
+		snippet = Code.objects.get(pk=snippet_id)
+		snippet.liked = snippet.liked + 1
+		snippet.save()
+
+		context = {
+			'status': True,
+			'message': 'success_liked'
+		}
+
+		return HttpResponse(simplejson.dumps(context), 'application/json')
+	else:
+		context = {
+			'status': False,
+			'message': 'permission_denied'
+		}
+		
+		return HttpResponse(simplejson.dumps(context), 'application/json')
+
+# Facebook Unlike
+@csrf_exempt
+def facebook_unlike(request):
+	if request.method == 'POST':
+		url = request.POST['url']
+
+		str_pos = url.find('?')
+		snippet_id = int(url[str_pos+1:])
+
+		snippet = Code.objects.get(pk=snippet_id)
+		snippet.liked = snippet.liked - 1
+		snippet.save()
+
+		context = {
+			'status': True,
+			'message': 'success_unliked'
+		}
+
+		return HttpResponse(simplejson.dumps(context), 'application/json')
+	else:
+		context = {
+			'status': False,
+			'message': 'permission_denied'
+		}
+		
+		return HttpResponse(simplejson.dumps(context), 'application/json')

@@ -21,7 +21,7 @@ class CodeManager(models.Manager):
 			desc = snippet.description
 			s_desc = desc[:100] + '...'
 			title = snippet.title
-			s_title = title[:20] + '...'
+			s_title = title[:25] + '...'
 
 			new_snippet = {
 				'id': snippet.id,
@@ -78,7 +78,7 @@ class CodeManager(models.Manager):
 			desc = snippet.description
 			s_desc = desc[:100] + '...'
 			title = snippet.title
-			s_title = title[:20] + '...'
+			s_title = title[:25] + '...'
 
 			new_snippet = {
 				'id': snippet.id,
@@ -118,7 +118,7 @@ class CodeManager(models.Manager):
 			desc = snippet.description
 			s_desc = desc[:100] + '...'
 			title = snippet.title
-			s_title = title[:20] + '...'
+			s_title = title[:25] + '...'
 
 			new_snippet = {
 				'id': snippet.id,
@@ -157,6 +157,7 @@ class Code(models.Model):
 	create_date = models.DateTimeField()
 	update_date = models.DateTimeField()
 	delete_date = models.DateTimeField(null=True)
+	liked = models.PositiveIntegerField()
 	objects = CodeManager()
 
 class Vote(models.Model):

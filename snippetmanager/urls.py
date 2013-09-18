@@ -25,4 +25,6 @@ urlpatterns = patterns('',
     url(r'^google_login$', views.google_login, name='google_login'),
     url(r'^my_projects$', views.my_projects, name='my_projects'),
     url(r'^(?P<project_id>\d+)/delete_project$', views.delete_project, name='delete_project'),
+    url(r'^facebook_like$', views.facebook_like, name='facebook_like'),
+    url(r'^facebook_unlike$', views.facebook_unlike, name='facebook_unlike'),
 )

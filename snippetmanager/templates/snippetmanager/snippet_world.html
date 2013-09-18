@@ -1,7 +1,70 @@
 {% extends "base.html" %}
 
 {% block content %}
+<div id="fb-root"></div>
+<script>
+
+window.fbAsyncInit = function() {
+	// init the FB JS SDK
+	FB.init({
+		appId      : '497371283685919',                        // App ID from the app dashboard
+		channelUrl : 'http://sourcesnippeter.dsonic.webfactional.com/static/js/channel.html', // Channel file for x-domain comms
+		status     : true,                                 // Check Facebook Login status
+		xfbml      : true                                  // Look for social plugins on the page
+	});
+
+	// Additional initialization code such as adding Event Listeners goes here
+	FB.Event.subscribe('edge.create',
+	    function(response) {
+	    	var params = {
+	    		'url': response
+	    	};
+
+	        $.post('/facebook_like', params, function(data) {
+	        	if (! data.status) {
+	        		console.log('internal_error');
+	        	}
+	        }, 'json');
+	    }
+	);
+
+	// Additional initialization code such as adding Event Listeners goes here
+	FB.Event.subscribe('edge.remove',
+	    function(response) {
+	    	var params = {
+	    		'url': response
+	    	};
+
+	        $.post('/facebook_unlike', params, function(data) {
+	        	if (! data.status) {
+	        		console.log('internal_error');
+	        	}
+	        }, 'json');
+	    }
+	);
+};
+
+// Load the SDK asynchronously
+(function(d, s, id){
+	var js, fjs = d.getElementsByTagName(s)[0];
+	if (d.getElementById(id)) {return;}
+	js = d.createElement(s); js.id = id;
+	js.src = "//connect.facebook.net/en_US/all.js";
+	fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));
+
+(function(d, s, id) {
+	var js, fjs = d.getElementsByTagName(s)[0];
+	if (d.getElementById(id)) return;
+	js = d.createElement(s); js.id = id;
+	js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=497371283685919";
+	fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));
+
+</script>
+
 <div class="container" id="contentSnippetWorld">
+	<fb:like ref="test" href="http://sourcesnippeter.dsonic.webfactional.com?home" width="450" layout="button_count" end="true"></fb:like>
 	<input type="hidden" value="git test">
 	<div class="navbar">
 		<div class="navbar-inner">
@@ -40,11 +103,12 @@
 			<div class="thumbnail">
 				<textarea readonly class="codes" style="height: 200px; width: 100%; resize: none; background-color: white; color: black; overflow: hidden;" name="codes" id="mySnippetsSnippet">{{ snippet.code }}</textarea>
 				<div class="caption">
-				<h3>{{ snippet.title }} <span style="font-size: small; color: red;">{{ snippet.category_name }}</span></h3>
+				<h4>{{ snippet.title }} <span style="font-size: small; color: red;">{{ snippet.category_name }}</span></h4>
 				<pre style="border: 0px;">{{ snippet.description }}</pre>
 				<p>
 					<a href="{% url 'snippetmanager:public_snippet_detail' snippet.id %}" class="btn btn-primary"><i class="icon-eye-open icon-white"></i> View</a>
 					{% if snippet.improve %}<span class="label label-success">Improvable</span>{% endif %}
+					<fb:like ref="{{ snippet.id }}" source="sourceworld" href="http://sourcesnippeter.dsonic.webfactional.com?{{ snippet.id }}" width="450" layout="button_count"></fb:like>
 				</p>
 				</div>
 			</div>
