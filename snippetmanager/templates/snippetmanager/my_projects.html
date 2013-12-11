@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container" id="contentMyProjects">
+	<fieldset>
+		<legend>My Projects</legend>
+		{% if projects|length > 1 %}
+		<table class="table table-striped">
+			<thead>
+				<tr>
+					<th>Project Name</th><th></th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for project in projects %}
+					{% if project.name != 'Untitled' %}
+					<tr>
+						<td>{{ project.name }}</td>
+						<td><span style="float: right;"><a href="{% url 'snippetmanager:delete_project' project.id %}">Delete</a></span></td>
+					</tr>
+					{% endif %}
+				{% endfor %}
+			</tbody>
+		</table>
+		{% endif %}
+		<a href="#newProjectModel" role="button" class="btn btn-primary" data-toggle="modal">New Project</a>
+	</fieldset>
+
+	<!-- Modal -->
+	<div id="newProjectModel" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-header" style="background-color: #df382c;">
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+			<center><h3 id="myModalLabel" style="color: white;">Create New Project</h3></center>
+		</div>
+		<div class="modal-body">
+			<div class="alert alert-error" id="newProjectError">
+				<!--<strong>Error!</strong> Duplicate Project Name.-->
+			</div>
+
+			<input type="hidden" id="newProjectUserId" value="{{ user.id }}">
+			<center><input type="text" id="newSnippetProjectName" placeholder="Project Name" value=""></center>
+			</div>
+			
+			<div class="modal-footer">
+			<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+			<button class="btn btn-primary" id="btnNewProject">Create</button>
+		</div>
+	</div>
+</div>
+{% endblock %}
