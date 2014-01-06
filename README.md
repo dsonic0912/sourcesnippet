@@ -1,4 +1,4 @@
 sourcesnippet
 =============
 
-Source Sharing System powered by Django
+Source Snippets Sharing System powered by Django
